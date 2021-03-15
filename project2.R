@@ -3,28 +3,31 @@ library(shinydashboard)
 library(leaflet)
 library(leaflet.extras)
 
-setwd("/Users/hkhandwala06/Desktop/CS424")
+#setwd("/Users/hkhandwala06/Desktop/CS424/Project2")
 
 data <- read.csv(file = "egrid2018_data.csv", fill = TRUE, sep = ",", header = TRUE, stringsAsFactors=FALSE)
-data00 <- read.csv(file = "egrid2000_data.csv",fill = TRUE, sep = ",", header = TRUE,stringsAsFactors=FALSE )
-data10 <- read.csv(file = "egrid2010_data.csv",fill = TRUE, sep = ",", header = TRUE,stringsAsFactors=FALSE )
+data00 <- read.csv(file = "egrid2000_data.csv",fill = TRUE, sep = ",", header = TRUE,stringsAsFactors=FALSE)
+data10 <- read.csv(file = "egrid2010_data.csv",fill = TRUE, sep = ",", header = TRUE,stringsAsFactors=FALSE)
 
 #2018 data
-filterData <- subset(data,select=c("STATE","PLANT_NAME","LAT","LON","COAL_GEN","OIL_GEN","GAS_GEN","NUCLEAR_GEN", "HYDRO_GEN","BIOMASS_GEN","WIND_GEN", "SOLAR_GEN", "GEOTHERMAL_GEN","OTHER_GEN","NET_NONRENEWABLE_GEN","NET_RENEWABLE_GEN" ))
+filterData <- subset(data,select=c("STATE","PLANT_NAME","LAT","LON","PL_COAL","PL_OIL","PL_GAS","PL_NUCLEAR", "PL_HYDRO","PL_BIOMASS","PL_WIND", "PL_SOLAR", "PL_GEOTHERMAL","PL_OTHER","PL_NONRENEWABLE","PL_RENEWABLE","PLFUELCT"))
+
 names(filterData)[names(filterData) == "STATE"] <- "STATE"
 names(filterData)[names(filterData) == "PLANT_NAME"] <- "PLANTNAME"
-names(filterData)[names(filterData) == "COAL_GEN"] <- "COAL"
-names(filterData)[names(filterData) == "OIL_GEN"] <- "OIL"
-names(filterData)[names(filterData) == "GAS_GEN"] <- "GAS"
-names(filterData)[names(filterData) == "NUCLEAR_GEN"] <- "NUCLEAR"
-names(filterData)[names(filterData) == "HYDRO_GEN"] <- "HYDRO"
-names(filterData)[names(filterData) == "BIOMASS_GEN"] <- "BIOMASS"
-names(filterData)[names(filterData) == "WIND_GEN"] <- "WIND"
-names(filterData)[names(filterData) == "SOLAR_GEN"] <- "SOLAR"
-names(filterData)[names(filterData) == "GEOTHERMAL_GEN"] <- "GEOTHERMAL"
-names(filterData)[names(filterData) == "OTHER_GEN"] <- "OTHER"
-names(filterData)[names(filterData) == "NET_NONRENEWABLE_GEN"] <- "NONRENEWABLE"
-names(filterData)[names(filterData) == "NET_RENEWABLE_GEN"] <- "RENEWABLE"
+names(filterData)[names(filterData) == "PL_COAL"] <- "COAL"
+names(filterData)[names(filterData) == "PL_OIL"] <- "OIL"
+names(filterData)[names(filterData) == "PL_GAS"] <- "GAS"
+names(filterData)[names(filterData) == "PL_NUCLEAR"] <- "NUCLEAR"
+names(filterData)[names(filterData) == "PL_HYDRO"] <- "HYDRO"
+names(filterData)[names(filterData) == "PL_BIOMASS"] <- "BIOMASS"
+names(filterData)[names(filterData) == "PL_WIND"] <- "WIND"
+names(filterData)[names(filterData) == "PL_SOLAR"] <- "SOLAR"
+names(filterData)[names(filterData) == "PL_GEOTHERMAL"] <- "GEOTHERMAL"
+names(filterData)[names(filterData) == "PL_OTHER"] <- "OTHER"
+names(filterData)[names(filterData) == "PL_NONRENEWABLE"] <- "NONRENEWABLE"
+names(filterData)[names(filterData) == "PL_RENEWABLE"] <- "RENEWABLE"
+names(filterData)[names(filterData) == "PLFUELCT"] <- "TYPE"
+
 
 filterData$COAL <- as.numeric(gsub(",","",filterData$COAL))
 filterData$OIL <- as.numeric(gsub(",","",filterData$OIL))
@@ -40,6 +43,7 @@ filterData$NONRENEWABLE <- as.numeric(gsub(",","",filterData$NONRENEWABLE))
 filterData$RENEWABLE <- as.numeric(gsub(",","",filterData$RENEWABLE))
 filterData$LAT = as.numeric(filterData$LAT)
 filterData$LON = as.numeric(filterData$LON)
+filterData$TYPE = as.factor(filterData$TYPE)
 
 filterData <- subset(filterData, filterData$COAL >= 0)
 filterData <- subset(filterData, filterData$OIL >= 0)
@@ -53,25 +57,28 @@ filterData <- subset(filterData, filterData$GEOTHERMAL >= 0)
 filterData <- subset(filterData, filterData$OTHER >= 0)
 filterData <- subset(filterData, filterData$NONRENEWABLE >= 0)
 filterData <- subset(filterData, filterData$RENEWABLE >= 0)
+filterData <- subset(filterData, filterData$TYPE !="")
 
 ilData <- subset(filterData, filterData$STATE == "IL")
 
+
 #2010 data
-filterData2 <- subset(data10,select=c("STATE","PLANT_NAME","LAT","LON","COAL_GEN","OIL_GEN","GAS_GEN","NUCLEAR_GEN", "HYDRO_GEN","BIOMASS_GEN","WIND_GEN", "SOLAR_GEN", "GEOTHERMAL_GEN","OTHER_GEN","NET_NONRENEWABLE_GEN","NET_RENEWABLE_GEN" ))
+filterData2 <- subset(data10,select=c("STATE","PLANT_NAME","LAT","LON","PL_COAL","PL_OIL","PL_GAS","PL_NUCLEAR", "PL_HYDRO","PL_BIOMASS","PL_WIND", "PL_SOLAR", "PL_GEOTHERMAL","PL_OTHER","PL_NONRENEWABLE","PL_RENEWABLE","PLFUELCT"))
 names(filterData2)[names(filterData2) == "STATE"] <- "STATE"
 names(filterData2)[names(filterData2) == "PLANT_NAME"] <- "PLANTNAME"
-names(filterData2)[names(filterData2) == "COAL_GEN"] <- "COAL"
-names(filterData2)[names(filterData2) == "OIL_GEN"] <- "OIL"
-names(filterData2)[names(filterData2) == "GAS_GEN"] <- "GAS"
-names(filterData2)[names(filterData2) == "NUCLEAR_GEN"] <- "NUCLEAR"
-names(filterData2)[names(filterData2) == "HYDRO_GEN"] <- "HYDRO"
-names(filterData2)[names(filterData2) == "BIOMASS_GEN"] <- "BIOMASS"
-names(filterData2)[names(filterData2) == "WIND_GEN"] <- "WIND"
-names(filterData2)[names(filterData2) == "SOLAR_GEN"] <- "SOLAR"
-names(filterData2)[names(filterData2) == "GEOTHERMAL_GEN"] <- "GEOTHERMAL"
-names(filterData2)[names(filterData2) == "OTHER_GEN"] <- "OTHER"
-names(filterData2)[names(filterData2) == "NET_NONRENEWABLE_GEN"] <- "NONRENEWABLE"
-names(filterData2)[names(filterData2) == "NET_RENEWABLE_GEN"] <- "RENEWABLE"
+names(filterData2)[names(filterData2) == "PL_COAL"] <- "COAL"
+names(filterData2)[names(filterData2) == "PL_OIL"] <- "OIL"
+names(filterData2)[names(filterData2) == "PL_GAS"] <- "GAS"
+names(filterData2)[names(filterData2) == "PL_NUCLEAR"] <- "NUCLEAR"
+names(filterData2)[names(filterData2) == "PL_HYDRO"] <- "HYDRO"
+names(filterData2)[names(filterData2) == "PL_BIOMASS"] <- "BIOMASS"
+names(filterData2)[names(filterData2) == "PL_WIND"] <- "WIND"
+names(filterData2)[names(filterData2) == "PL_SOLAR"] <- "SOLAR"
+names(filterData2)[names(filterData2) == "PL_GEOTHERMAL"] <- "GEOTHERMAL"
+names(filterData2)[names(filterData2) == "PL_OTHER"] <- "OTHER"
+names(filterData2)[names(filterData2) == "PL_NONRENEWABLE"] <- "NONRENEWABLE"
+names(filterData2)[names(filterData2) == "PL_RENEWABLE"] <- "RENEWABLE"
+names(filterData2)[names(filterData2) == "PLFUELCT"] <- "TYPE"
 
 filterData2$COAL <- as.numeric(gsub(",","",filterData2$COAL))
 filterData2$OIL <- as.numeric(gsub(",","",filterData2$OIL))
@@ -87,6 +94,7 @@ filterData2$NONRENEWABLE <- as.numeric(gsub(",","",filterData2$NONRENEWABLE))
 filterData2$RENEWABLE <- as.numeric(gsub(",","",filterData2$RENEWABLE))
 filterData2$LAT = as.numeric(filterData2$LAT)
 filterData2$LON = as.numeric(filterData2$LON)
+filterData2$TYPE = as.factor(filterData2$TYPE)
 
 filterData2 <- subset(filterData2, filterData2$COAL >= 0)
 filterData2 <- subset(filterData2, filterData2$OIL >= 0)
@@ -100,25 +108,27 @@ filterData2 <- subset(filterData2, filterData2$GEOTHERMAL >= 0)
 filterData2 <- subset(filterData2, filterData2$OTHER >= 0)
 filterData2 <- subset(filterData2, filterData2$NONRENEWABLE >= 0)
 filterData2 <- subset(filterData2, filterData2$RENEWABLE >= 0)
+filterData2 <- subset(filterData2, filterData2$TYPE !="")
 
 ilData2 <- subset(filterData2, filterData2$STATE == "IL")
 
 #2000 data
-filterData3 <- subset(data00,select=c("STATE","PLANT_NAME","LAT","LON","COAL_GEN","OIL_GEN","GAS_GEN","NUCLEAR_GEN", "HYDRO_GEN","BIOMASS_GEN","WIND_GEN", "SOLAR_GEN", "GEOTHERMAL_GEN","OTHER_GEN","NET_NONRENEWABLE_GEN","NET_RENEWABLE_GEN" ))
+filterData3 <- subset(data00,select=c("STATE","PLANT_NAME","LAT","LON","PL_COAL","PL_OIL","PL_GAS","PL_NUCLEAR", "PL_HYDRO","PL_BIOMASS","PL_WIND", "PL_SOLAR", "PL_GEOTHERMAL","PL_OTHER","PL_NONRENEWABLE","PL_RENEWABLE","PLFUELCT"))
 names(filterData3)[names(filterData3) == "STATE"] <- "STATE"
 names(filterData3)[names(filterData3) == "PLANT_NAME"] <- "PLANTNAME"
-names(filterData3)[names(filterData3) == "COAL_GEN"] <- "COAL"
-names(filterData3)[names(filterData3) == "OIL_GEN"] <- "OIL"
-names(filterData3)[names(filterData3) == "GAS_GEN"] <- "GAS"
-names(filterData3)[names(filterData3) == "NUCLEAR_GEN"] <- "NUCLEAR"
-names(filterData3)[names(filterData3) == "HYDRO_GEN"] <- "HYDRO"
-names(filterData3)[names(filterData3) == "BIOMASS_GEN"] <- "BIOMASS"
-names(filterData3)[names(filterData3) == "WIND_GEN"] <- "WIND"
-names(filterData3)[names(filterData3) == "SOLAR_GEN"] <- "SOLAR"
-names(filterData3)[names(filterData3) == "GEOTHERMAL_GEN"] <- "GEOTHERMAL"
-names(filterData3)[names(filterData3) == "OTHER_GEN"] <- "OTHER"
-names(filterData3)[names(filterData3) == "NET_NONRENEWABLE_GEN"] <- "NONRENEWABLE"
-names(filterData3)[names(filterData3) == "NET_RENEWABLE_GEN"] <- "RENEWABLE"
+names(filterData3)[names(filterData3) == "PL_COAL"] <- "COAL"
+names(filterData3)[names(filterData3) == "PL_OIL"] <- "OIL"
+names(filterData3)[names(filterData3) == "PL_GAS"] <- "GAS"
+names(filterData3)[names(filterData3) == "PL_NUCLEAR"] <- "NUCLEAR"
+names(filterData3)[names(filterData3) == "PL_HYDRO"] <- "HYDRO"
+names(filterData3)[names(filterData3) == "PL_BIOMASS"] <- "BIOMASS"
+names(filterData3)[names(filterData3) == "PL_WIND"] <- "WIND"
+names(filterData3)[names(filterData3) == "PL_SOLAR"] <- "SOLAR"
+names(filterData3)[names(filterData3) == "PL_GEOTHERMAL"] <- "GEOTHERMAL"
+names(filterData3)[names(filterData3) == "PL_OTHER"] <- "OTHER"
+names(filterData3)[names(filterData3) == "PL_NONRENEWABLE"] <- "NONRENEWABLE"
+names(filterData3)[names(filterData3) == "PL_RENEWABLE"] <- "RENEWABLE"
+names(filterData3)[names(filterData3) == "PLFUELCT"] <- "TYPE"
 
 filterData3$COAL <- as.numeric(gsub(",","",filterData3$COAL))
 filterData3$OIL <- as.numeric(gsub(",","",filterData3$OIL))
@@ -134,6 +144,7 @@ filterData3$NONRENEWABLE <- as.numeric(gsub(",","",filterData3$NONRENEWABLE))
 filterData3$RENEWABLE <- as.numeric(gsub(",","",filterData3$RENEWABLE))
 filterData3$LAT = as.numeric(filterData3$LAT)
 filterData3$LON = as.numeric(filterData3$LON)
+filterData3$TYPE = as.factor(filterData3$TYPE)
 
 filterData3 <- subset(filterData3, filterData3$COAL >= 0)
 filterData3 <- subset(filterData3, filterData3$OIL >= 0)
@@ -147,6 +158,7 @@ filterData3 <- subset(filterData3, filterData3$GEOTHERMAL >= 0)
 filterData3 <- subset(filterData3, filterData3$OTHER >= 0)
 filterData3 <- subset(filterData3, filterData3$NONRENEWABLE >= 0)
 filterData3 <- subset(filterData3, filterData3$RENEWABLE >= 0)
+filterData3 <- subset(filterData3, filterData3$TYPE !="")
 
 ilData3 <- subset(filterData3, filterData3$STATE == "IL")
 
@@ -161,17 +173,7 @@ states <- c(
   "Montana","North Carolina","North Dakota","Nebraska","New Hampshire","New Jersey","New Mexico","Nevada","New York","Ohio","Oklahoma","Orgeon",
   "Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennesse","Texas", "Utah", "Virginia", "Vermont", "Washington", "Wisconsin", "West Virginia", "Wyoming"
 )
-# createILMap <- function(input, data){
-#   map <- leaflet()
-#   map <- addTiles(map)
-#   addToMap <- input
-#   if(is.null(input)){
-#     return (map)
-#   }
-#   if("All" %in% input){
-#     addToMap <- c(source)
-#   }
-# }   
+   
 
 ui <- fluidPage(
   navbarPage("CS 424 - Project 2",
@@ -259,22 +261,22 @@ ui <- fluidPage(
                               fluidRow(box(title = "USA Power Plants", solidHeader = TRUE, 
                                            status = "primary",width = 100,
                                            column(width=10,
-                                                  column(width=4,checkboxInput('AllEnergy3','All',TRUE)),
-                                                  column(width=4,checkboxInput('CoalEnergy3','Coal',FALSE)),
-                                                  column(width=4,checkboxInput('OilEnergy3','Oil',FALSE)),
-                                                  column(width=4,checkboxInput('GasEnergy3','Gas',FALSE)),
-                                                  column(width=4,checkboxInput('NuclearEnergy3','Nuclear',FALSE)),
-                                                  column(width=4,checkboxInput('HydroEnergy3','Hydro',FALSE)),
-                                                  column(width=4,checkboxInput('BiomassEnergy3','Biomass',FALSE)),
-                                                  column(width=4,checkboxInput('WindEnergy3','Wind',FALSE)),
-                                                  column(width=4,checkboxInput('SolarEnergy3','Solar',FALSE)),
-                                                  column(width=4,checkboxInput('GeothermalEnergy3','Geothermal',FALSE)),
-                                                  column(width=4,checkboxInput('OtherEnergy3','Other',FALSE))),
-                                                  column(width=4,checkboxInput('REnergy3','Renewable',FALSE)),
-                                                  column(width=4,checkboxInput('NREnergy3','Non-Renewable',FALSE)),
-                                           column(4,selectInput('State2', 'Select State:',
+                                                  column(width=2,checkboxInput('AllEnergy3','All',TRUE)),
+                                                  column(width=2,checkboxInput('CoalEnergy3','Coal',FALSE)),
+                                                  column(width=2,checkboxInput('OilEnergy3','Oil',FALSE)),
+                                                  column(width=2,checkboxInput('GasEnergy3','Gas',FALSE)),
+                                                  column(width=2,checkboxInput('NuclearEnergy3','Nuclear',FALSE)),
+                                                  column(width=2,checkboxInput('HydroEnergy3','Hydro',FALSE)),
+                                                  column(width=2,checkboxInput('BiomassEnergy3','Biomass',FALSE)),
+                                                  column(width=2,checkboxInput('WindEnergy3','Wind',FALSE)),
+                                                  column(width=2,checkboxInput('SolarEnergy3','Solar',FALSE)),
+                                                  column(width=2,checkboxInput('GeothermalEnergy3','Geothermal',FALSE)),
+                                                  column(width=2,checkboxInput('OtherEnergy3','Other',FALSE))),
+                                                  column(width=2,checkboxInput('REnergy3','Renewable',FALSE)),
+                                                  column(width=2,checkboxInput('NREnergy3','Non-Renewable',FALSE)),
+                                           column(2,selectInput('State2', 'Select State:',
                                                                 choices=states,selected = "USA")),
-                                           column(4, selectInput('Year2', 'Select Year:',
+                                           column(2, selectInput('Year2', 'Select Year:',
                                                                  choices=c("2000","2010","2018"),selected = "2018")),
                                            leafletOutput("plot4",height=600)
                                   )
@@ -294,19 +296,7 @@ server <- function(input, output, session){
   output$title1 <- renderText(paste("Power Plants in", input$State, "in",input$Year))
   output$title2 <- renderText(paste("Power Plants in", input$State1, "in",input$Year1))
 
-  
-  # output$plot1 <- renderLeaflet({
-  #     map <- createILMap(input, ilData)
-  #     map <- setView(map, lng = -88.993217, lat = 40.477089, zoom = 4)
-  #     map
-  #     addCircleMarkers(lng = ilData$LON, lat = ilData$LAT, color = col)
-  #     addLegend("bottomright",
-  #               pal = col,
-  #               values = source,
-  #               title = "Energy Sources",
-  #               opacity = 1)
-  # 
-  # })
+
 }
 
 shinyApp(ui, server)
