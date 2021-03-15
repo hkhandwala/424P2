@@ -162,16 +162,14 @@ filterData3 <- subset(filterData3, filterData3$TYPE !="")
 
 ilData3 <- subset(filterData3, filterData3$STATE == "IL")
 
-col <- c("black", "darkgrey", "lightgreen", "green","blue","brown","cyan","yellow","orange", "purple")
-source <- c("Coal", "Oil", "Gas", "Nuclear", "Hydro", "Biomass", "Wind", "Solar", "Geothermal", "Other")
-mapColor <- c(source = col)
+col = colorFactor(palette = c("grey", "red", "darkolivegreen3", "green","deepskyblue","brown4","navyblue","gold","darkorange", "purple"), domain = filterData$TYPE)
 
 states <- c(
   "USA",
-  "Alaska","Alabama","Arkansas","Arizona","California","Colorado","Connecticut", "District of Columbia","Delaware","Florida","Georgia","Hawaii",
-  "Idaho","Iowa","Illinois","Indiana","Kansas","Kentucky","Louisiana","Massachusetts","MaryLand","Maine","Michigan","Minnesota","Missouri","Mississippi",
-  "Montana","North Carolina","North Dakota","Nebraska","New Hampshire","New Jersey","New Mexico","Nevada","New York","Ohio","Oklahoma","Orgeon",
-  "Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennesse","Texas", "Utah", "Virginia", "Vermont", "Washington", "Wisconsin", "West Virginia", "Wyoming"
+  "AK","AL","AR","AZ","CA","CO","CT", "DC","DE","FL","GA","HI",
+  "ID","IA","IL","IN","KS","KY","LA","MA","MD","ME","MI","MN","MO","MS",
+  "MT","NC","ND","NE","NH","NJ","NM","NV","NY","OH","OK","OR",
+  "PA","RI","SC","SD","TN","TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY"
 )
    
 
@@ -194,9 +192,9 @@ ui <- fluidPage(
                                                    column(width=2,checkboxInput('SolarEnergy','Solar',FALSE)),
                                                    column(width=2,checkboxInput('GeothermalEnergy','Geothermal',FALSE)),
                                                    column(width=2,checkboxInput('OtherEnergy','Other',FALSE))),
-                                                   column(width=2,checkboxInput('REnergy','Renewable',FALSE)),
-                                                   column(width=2,checkboxInput('NREnergy','Non-Renewable',FALSE)),
-                                            leafletOutput("plot1",height=600)))
+                                                   column(width=2,checkboxInput('ReNewEnergy','Renewable',FALSE)),
+                                                   column(width=2,checkboxInput('NonReNewEnergy','Non-Renewable',FALSE)),
+                                            leafletOutput("plot1",height=800)))
                         )
                       )
               ),
@@ -217,14 +215,14 @@ ui <- fluidPage(
                                             column(width=4,checkboxInput('SolarEnergy2','Solar',FALSE)),
                                             column(width=4,checkboxInput('GeothermalEnergy2','Geothermal',FALSE)),
                                             column(width=4,checkboxInput('OtherEnergy2','Other',FALSE))),
-                                            column(width=4,checkboxInput('REnergy2','Renewable',FALSE)),
-                                            column(width=4,checkboxInput('NREnergy2','Non-Renewable',FALSE)),
+                                            column(width=4,checkboxInput('ReNewEnergy2','Renewable',FALSE)),
+                                            column(width=4,checkboxInput('NonReNewEnergy2','Non-Renewable',FALSE)),
                                      column(4,selectInput('State', 'Select State:',
                                                           choices=states,selected = "Illinois")),
                                      column(4, selectInput('Year', 'Select Year:',
                                                            choices=c("2000","2010","2018"),selected = "2018")),
                                      
-                                     leafletOutput("plot2",height = 300)
+                                     leafletOutput("plot2",height = 800)
                                  )
                                )
                            ),
@@ -243,13 +241,13 @@ ui <- fluidPage(
                                             column(width=4,checkboxInput('SolarEnergy3','Solar',FALSE)),
                                             column(width=4,checkboxInput('GeothermalEnergy3','Geothermal',FALSE)),
                                             column(width=4,checkboxInput('OtherEnergy3','Other',FALSE))),
-                                            column(width=4,checkboxInput('REnergy3','Renewable',FALSE)),
-                                            column(width=4,checkboxInput('NREnergy3','Non-Renewable',FALSE)),
+                                            column(width=4,checkboxInput('ReNewEnergy3','Renewable',FALSE)),
+                                            column(width=4,checkboxInput('NonReNewEnergy3','Non-Renewable',FALSE)),
                                      column(4,selectInput('State1', 'Select State:',
                                                           choices=states,selected = "USA")),
                                      column(4, selectInput('Year1', 'Select Year:',
                                                            choices=c("2000","2010","2018"),selected = "2018")),
-                                     leafletOutput("plot3",height = 300)
+                                     leafletOutput("plot3",height = 800)
                                  )
                                )
                         )
@@ -258,27 +256,27 @@ ui <- fluidPage(
             tabPanel("Map of USA", 
                      fluidRow(
                        column(12,
-                              fluidRow(box(title = "USA Power Plants", solidHeader = TRUE, 
+                              fluidRow(box(textOutput('title3'), solidHeader = TRUE, 
                                            status = "primary",width = 100,
                                            column(width=10,
-                                                  column(width=2,checkboxInput('AllEnergy3','All',TRUE)),
-                                                  column(width=2,checkboxInput('CoalEnergy3','Coal',FALSE)),
-                                                  column(width=2,checkboxInput('OilEnergy3','Oil',FALSE)),
-                                                  column(width=2,checkboxInput('GasEnergy3','Gas',FALSE)),
-                                                  column(width=2,checkboxInput('NuclearEnergy3','Nuclear',FALSE)),
-                                                  column(width=2,checkboxInput('HydroEnergy3','Hydro',FALSE)),
-                                                  column(width=2,checkboxInput('BiomassEnergy3','Biomass',FALSE)),
-                                                  column(width=2,checkboxInput('WindEnergy3','Wind',FALSE)),
-                                                  column(width=2,checkboxInput('SolarEnergy3','Solar',FALSE)),
-                                                  column(width=2,checkboxInput('GeothermalEnergy3','Geothermal',FALSE)),
-                                                  column(width=2,checkboxInput('OtherEnergy3','Other',FALSE))),
-                                                  column(width=2,checkboxInput('REnergy3','Renewable',FALSE)),
-                                                  column(width=2,checkboxInput('NREnergy3','Non-Renewable',FALSE)),
+                                                  column(width=2,checkboxInput('AllEnergy4','All',TRUE)),
+                                                  column(width=2,checkboxInput('CoalEnergy4','Coal',FALSE)),
+                                                  column(width=2,checkboxInput('OilEnergy4','Oil',FALSE)),
+                                                  column(width=2,checkboxInput('GasEnergy4','Gas',FALSE)),
+                                                  column(width=2,checkboxInput('NuclearEnergy4','Nuclear',FALSE)),
+                                                  column(width=2,checkboxInput('HydroEnergy4','Hydro',FALSE)),
+                                                  column(width=2,checkboxInput('BiomassEnergy4','Biomass',FALSE)),
+                                                  column(width=2,checkboxInput('WindEnergy4','Wind',FALSE)),
+                                                  column(width=2,checkboxInput('SolarEnergy4','Solar',FALSE)),
+                                                  column(width=2,checkboxInput('GeothermalEnergy4','Geothermal',FALSE)),
+                                                  column(width=2,checkboxInput('OtherEnergy4','Other',FALSE))),
+                                                  column(width=2,checkboxInput('ReNewEnergy4','Renewable',FALSE)),
+                                                  column(width=2,checkboxInput('NonReNewEnergy4','Non-Renewable',FALSE)),
                                            column(2,selectInput('State2', 'Select State:',
                                                                 choices=states,selected = "USA")),
                                            column(2, selectInput('Year2', 'Select Year:',
                                                                  choices=c("2000","2010","2018"),selected = "2018")),
-                                           leafletOutput("plot4",height=600)
+                                           leafletOutput("plot4",height=800)
                                   )
                               )
                       )
@@ -295,9 +293,261 @@ ui <- fluidPage(
 server <- function(input, output, session){
   output$title1 <- renderText(paste("Power Plants in", input$State, "in",input$Year))
   output$title2 <- renderText(paste("Power Plants in", input$State1, "in",input$Year1))
+  output$title3 <- renderText(paste("USA Power Plants in",input$Year2))
 
-
-}
+  ilMapFunc <- reactive({
+    returnInfo <- NULL
+    if(input$AllEnergy){
+      returnInfo <- ilData
+    }
+    if(input$CoalEnergy){
+      returnInfo <- rbind(returnInfo, subset(ilData, ilData$TYPE=="COAL"))
+    }
+    if(input$OilEnergy){
+      returnInfo<- rbind(returnInfo,subset(ilData,ilData$TYPE=="OIL"))
+    }
+    if(input$GasEnergy){
+      returnInfo<- rbind(returnInfo,subset(ilData,ilData$TYPE=="GAS"))
+    }
+    if(input$NuclearEnergy){
+      returnInfo<- rbind(returnInfo,subset(ilData,ilData$TYPE=="NUCLEAR"))
+    }
+    if(input$HydroEnergy){
+      returnInfo<- rbind(returnInfo,subset(ilData,ilData$TYPE=="HYDRO"))
+    }
+    if(input$BiomassEnergy){
+      returnInfo<- rbind(returnInfo,subset(ilData,ilData$TYPE=="BIOMASS"))
+    }
+    if(input$WindEnergy){
+      returnInfo<- rbind(returnInfo,subset(ilData,ilData$TYPE=="WIND"))
+    }
+    if(input$SolarEnergy){
+      returnInfo<- rbind(returnInfo,subset(ilData,ilData$TYPE=="SOLAR"))
+    }
+    if(input$GeothermalEnergy){
+      returnInfo<- rbind(returnInfo,subset(ilData,ilData$TYPE=="GEOTHERMAL"))
+    }
+    if(input$OtherEnergy){
+      returnInfo<- rbind(returnInfo,subset(ilData,ilData$TYPE=="OTHER"))
+    }
+    if(input$ReNewEnergy){
+      returnInfo<- rbind(returnInfo,subset(ilData,TYPE %in% c("WIND","BIOMASS","HYDRO","SOLAR","GEOTHERMAL")))
+    }
+    if(input$NonReNewEnergy){
+      returnInfo<- rbind(returnInfo,subset(ilData,TYPE %in% c("COAL","OIL","GAS","NUCLEAR","OTHER")))
+    }
+    returnInfo 
+  })#end of ilMapFunc
+  
+  output$plot1 <- renderLeaflet({
+    map <- ilMapFunc() 
+    leaflet(data = map) %>%
+      addProviderTiles("OpenStreetMap.HOT") %>%
+      addCircleMarkers(lat = ~LAT, lng = ~LON, color = ~col(TYPE)) %>%
+      addLegend("bottomright", 
+              pal = col,
+              values = ilData$TYPE,
+              title= "Type of Energy Source",
+              opacity = 1)
+  })
+  
+  twoMapFunc1 <- reactive({
+    returnInfo <- NULL
+    if(input$Year=="2000"){
+      yearSelected<- subset(filterData3,filterData3$STATE==input$State)
+    }
+    if(input$Year=="2010"){
+      yearSelected<- subset(filterData2,filterData2$STATE==input$State)
+    }
+    if(input$Year=="2018"){
+      yearSelected<- subset(filterData,filterData$STATE==input$State)
+    }
+    
+    if(input$AllEnergy2){
+      returnInfo <- yearSelected
+    }
+    if(input$CoalEnergy2){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="COAL"))
+    }
+    if(input$OilEnergy2){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="OIL"))
+    }
+    if(input$GasEnergy2){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="GAS"))
+    }
+    if(input$BiomassEnergy2){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="BIOMASS"))
+    }
+    if(input$WindEnergy2){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="WIND"))
+    }
+    if(input$SolarEnergy2){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="SOLAR"))
+    }
+    if(input$GeothermalEnergy2){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="GEOTHERMAL"))
+    }
+    if(input$NuclearEnergy2){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="NUCLEAR"))
+    }
+    if(input$HydroEnergy2){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="HYDRO"))
+    }
+    if(input$OtherEnergy2){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="OTHER"))
+    }
+    if(input$ReNewEnergy2){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,TYPE %in% c("WIND","BIOMASS","HYDRO","SOLAR","GEOTHERMAL")))
+    }
+    if(input$NonReNewEnergy2){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,TYPE %in% c("COAL","OIL","GAS","NUCLEAR","OTHER")))
+    }
+    returnInfo 
+  })
+  output$plot2 <- renderLeaflet({
+    map <- twoMapFunc1() 
+    leaflet(data = map) %>%
+      addProviderTiles("OpenStreetMap.HOT") %>%
+      addCircleMarkers(lat = ~LAT, lng = ~LON, color = ~col(TYPE)) %>%
+      addLegend("bottomright", 
+                pal = col,
+                values = ~TYPE,
+                title= "Type of Energy Source",
+                opacity = 1)
+  })
+  
+  twoMapFunc2 <- reactive({
+    returnInfo <- NULL
+    if(input$Year1=="2000"){
+      yearSelected<- subset(filterData3,filterData3$STATE==input$State1)
+    }
+    if(input$Year1=="2010"){
+      yearSelected<- subset(filterData2,filterData2$STATE==input$State1)
+    }
+    if(input$Year1=="2018"){
+      yearSelected<- subset(filterData,filterData$STATE==input$State1)
+    }
+    
+    if(input$AllEnergy3){
+      returnInfo <- yearSelected
+    }
+    if(input$CoalEnergy3){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="COAL"))
+    }
+    if(input$OilEnergy3){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="OIL"))
+    }
+    if(input$GasEnergy3){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="GAS"))
+    }
+    if(input$BiomassEnergy3){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="BIOMASS"))
+    }
+    if(input$WindEnergy3){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="WIND"))
+    }
+    if(input$SolarEnergy3){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="SOLAR"))
+    }
+    if(input$GeothermalEnergy3){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="GEOTHERMAL"))
+    }
+    if(input$NuclearEnergy3){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="NUCLEAR"))
+    }
+    if(input$HydroEnergy3){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="HYDRO"))
+    }
+    if(input$OtherEnergy3){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="OTHER"))
+    }
+    if(input$ReNewEnergy3){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,TYPE %in% c("WIND","BIOMASS","HYDRO","SOLAR","GEOTHERMAL")))
+    }
+    if(input$NonReNewEnergy3){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,TYPE %in% c("COAL","OIL","GAS","NUCLEAR","OTHER")))
+    }
+    returnInfo 
+  })
+  
+  output$plot3 <- renderLeaflet({
+    map2 <- twoMapFunc2() 
+    leaflet(data = map2) %>%
+      addProviderTiles("OpenStreetMap.HOT") %>%
+      addCircleMarkers(lat = ~LAT, lng = ~LON, color = ~col(TYPE)) %>%
+      addLegend("bottomright", 
+                pal = col,
+                values = ~TYPE,
+                title= "Type of Energy Source",
+                opacity = 1)
+  })
+  
+  usMapFunc <- reactive({
+    returnInfo <- NULL
+    if(input$Year2=="2000" & input$State2 =="USA"){
+      yearSelected<- filterData3
+    }
+    if(input$Year2=="2010" & input$State2 =="USA"){
+      yearSelected<- filterData2
+    }
+    if(input$Year2=="2018" & input$State2 =="USA"){
+      yearSelected<- filterData
+    }
+    
+    if(input$AllEnergy4){
+      returnInfo <- yearSelected
+    }
+    if(input$CoalEnergy4){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="COAL"))
+    }
+    if(input$OilEnergy4){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="OIL"))
+    }
+    if(input$GasEnergy4){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="GAS"))
+    }
+    if(input$BiomassEnergy4){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="BIOMASS"))
+    }
+    if(input$WindEnergy4){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="WIND"))
+    }
+    if(input$SolarEnergy4){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="SOLAR"))
+    }
+    if(input$GeothermalEnergy4){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="GEOTHERMAL"))
+    }
+    if(input$NuclearEnergy4){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="NUCLEAR"))
+    }
+    if(input$HydroEnergy4){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="HYDRO"))
+    }
+    if(input$OtherEnergy4){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,yearSelected$TYPE=="OTHER"))
+    }
+    if(input$ReNewEnergy4){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,TYPE %in% c("WIND","BIOMASS","HYDRO","SOLAR","GEOTHERMAL")))
+    }
+    if(input$NonReNewEnergy4){
+      returnInfo<- rbind(returnInfo,subset(yearSelected,TYPE %in% c("COAL","OIL","GAS","NUCLEAR","OTHER")))
+    }
+    returnInfo 
+  })
+  output$plot4 <- renderLeaflet({
+    map <- usMapFunc() 
+    leaflet(data=map,options = leafletOptions(
+      minZoom = 1, maxZoom = 4.6))%>%
+      addProviderTiles("OpenStreetMap.HOT") %>%
+      addCircleMarkers(lat = ~LAT, lng = ~LON, color = ~col(TYPE)) %>%
+      addLegend("bottomright", 
+                pal = col,
+                values = ilData$TYPE,
+                title= "Type of Energy Source",
+                opacity = 1)
+  })
+  
+}#end of server
 
 shinyApp(ui, server)
-  
